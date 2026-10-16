@@ -217,19 +217,30 @@ const allowedOrigins = (
   .map((origin) => origin.trim())
   .filter(Boolean);
 
+// app.use(
+//   cors({
+//     origin(origin, callback) {
+//       // Requests without an Origin header (same-origin,
+//       // curl, Postman, server-to-server) are allowed.
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         return callback(null, true);
+//       }
+
+//       // Disallowed origin: do not throw, simply omit the
+//       // CORS headers so the browser blocks the response.
+//       return callback(null, false);
+//     },
+//   })
+// );
+
 app.use(
   cors({
-    origin(origin, callback) {
-      // Requests without an Origin header (same-origin,
-      // curl, Postman, server-to-server) are allowed.
-      if (!origin || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      // Disallowed origin: do not throw, simply omit the
-      // CORS headers so the browser blocks the response.
-      return callback(null, false);
-    },
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+    ],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
