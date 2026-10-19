@@ -209,6 +209,40 @@ const PORT =
 // Comma-separated list of exact origins allowed to
 // call the API. Defaults to both Vite development
 // ports (5173 and 5174).
+// const allowedOrigins = (
+//   process.env.CORS_ORIGINS ||
+//   "http://localhost:5173,http://localhost:5174"
+// )
+//   .split(",")
+//   .map((origin) => origin.trim())
+//   .filter(Boolean);
+
+// app.use(
+//   cors({
+//     origin(origin, callback) {
+//       // Requests without an Origin header (same-origin,
+//       // curl, Postman, server-to-server) are allowed.
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         return callback(null, true);
+//       }
+
+//       // Disallowed origin: do not throw, simply omit the
+//       // CORS headers so the browser blocks the response.
+//       return callback(null, false);
+//     },
+//   })
+// );
+
+// app.use(
+//   cors({
+//     origin: [
+//       "http://localhost:5173",
+//       "http://localhost:5174",
+//     ],
+//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   })
+// );
 const allowedOrigins = (
   process.env.CORS_ORIGINS ||
   "http://localhost:5173,http://localhost:5174"
@@ -217,33 +251,19 @@ const allowedOrigins = (
   .map((origin) => origin.trim())
   .filter(Boolean);
 
+const vercelPattern = /^https:\/\/full-gpt-clone[a-z0-9-]*\.vercel\.app$/;
+
 app.use(
   cors({
     origin(origin, callback) {
-      // Requests without an Origin header (same-origin,
-      // curl, Postman, server-to-server) are allowed.
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin || allowedOrigins.includes(origin) || vercelPattern.test(origin)) {
         return callback(null, true);
       }
-
-      // Disallowed origin: do not throw, simply omit the
-      // CORS headers so the browser blocks the response.
       return callback(null, false);
     },
-  })
-);
-
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:5174",
-    ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
-
+  }));
 // ======================================================
 // Middleware
 // ======================================================
