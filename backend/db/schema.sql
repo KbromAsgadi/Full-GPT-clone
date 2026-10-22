@@ -1,6 +1,3 @@
--- CREATE DATABASE IF NOT EXISTS `gpt-clone`;
-
--- USE `gpt-clone`;
 
 CREATE TABLE IF NOT EXISTS conversations (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

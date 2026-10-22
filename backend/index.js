@@ -177,7 +177,7 @@
 
 // startServer();
 
-
+import cors from "cors";
 require("dotenv/config");
 
 const express = require("express");
@@ -243,27 +243,55 @@ const PORT =
 //     allowedHeaders: ["Content-Type", "Authorization"],
 //   })
 // );
+// const allowedOrigins = (
+//   process.env.CORS_ORIGINS ||
+//   "http://localhost:5173,http://localhost:5174"
+// )
+//   .split(",")
+//   .map((origin) => origin.trim())
+//   .filter(Boolean);
+
+// const vercelPattern = /^https:\/\/full-gpt-clone[a-z0-9-]*\.vercel\.app$/;
+
+// app.use(
+//   cors({
+//     origin(origin, callback) {
+//       if (!origin || allowedOrigins.includes(origin) || vercelPattern.test(origin)) {
+//         return callback(null, true);
+//       }
+//       return callback(null, false);
+//     },
+//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   }));
 const allowedOrigins = (
   process.env.CORS_ORIGINS ||
-  "http://localhost:5173,http://localhost:5174"
+  [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "https://full-gpt-clone-git-main-kbrom.vercel.app",
+  ].join(",")
 )
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
 
-const vercelPattern = /^https:\/\/full-gpt-clone[a-z0-9-]*\.vercel\.app$/;
-
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin) || vercelPattern.test(origin)) {
+      if (!origin || allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
-      return callback(null, false);
+
+      console.error("CORS blocked origin:", origin);
+      return callback(new Error("Origin not allowed by CORS"));
     },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-  }));
+    credentials: true,
+  })
+);
+
 // ======================================================
 // Middleware
 // ======================================================
